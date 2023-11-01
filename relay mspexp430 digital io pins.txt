@@ -1,0 +1,27 @@
+#include <msp430.h>
+#define RELAY_PIN BIT0  // Example: Relay connected to P1.0
+int main(void)
+{
+    WDTCTL = WDTPW | WDTHOLD;  // Stop the watchdog timer
+    BCSCTL1 = CALBC1_1MHZ;     // Set DCO to 1MHz
+    DCOCTL = CALDCO_1MHZ;
+
+    P1DIR |= RELAY_PIN;        // Set the relay pin as an output
+    P1OUT &= ~RELAY_PIN;       // Initially turn off the relay
+
+    // Your code goes here
+
+    return 0;
+}
+while (1)
+{
+    // Turn the relay on
+    P1OUT |= RELAY_PIN;
+
+    __delay_cycles(1000000);  // Delay for a while (1 second, assuming 1MHz clock)
+
+    // Turn the relay off
+    P1OUT &= ~RELAY_PIN;
+
+    __delay_cycles(1000000);  // Delay for a while (1 second)
+}

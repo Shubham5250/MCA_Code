@@ -1,0 +1,35 @@
+#include <msp430.h>
+
+#define IN1_PIN     BIT0    // GPIO pin for IN1
+#define IN2_PIN     BIT1    // GPIO pin for IN2
+#define EN1_PIN     BIT2    // GPIO pin for EN1 (PWM)
+
+void main(void)
+{
+    WDTCTL = WDTPW | WDTHOLD;   // Stop the watchdog timer
+
+    P1DIR |= IN1_PIN | IN2_PIN | EN1_PIN; // Set pins as outputs
+
+    P1OUT &= ~(IN1_PIN | IN2_PIN); // Initialize IN1 and IN2 low
+    //P1SEL |= EN1_PIN; // Enable PWM on EN1 pin
+    P1OUT |= EN1_PIN; // Initialize EN1 high
+
+    
+     int i;
+    while (1)
+    {
+        // Forward rotation
+        P1OUT |= IN1_PIN;
+        P1OUT &= ~IN2_PIN;
+
+        // Control motor speed by changing TACCR1 value
+        for(i=0;i<10000;i++); // Delay for a while
+
+        // Reverse rotation
+        P1OUT &= ~IN1_PIN;
+        P1OUT |= IN2_PIN;
+
+        // Control motor speed by changing TACCR1 value
+        for(i=0;i<10000;i++); // Delay for a while
+    }
+}
